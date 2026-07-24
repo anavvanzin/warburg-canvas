@@ -1,0 +1,50 @@
+[
+  {
+    "id": "FR-1792-001",
+    "title": "Marianne revolucionária",
+    "country": "FR",
+    "year": 1792,
+    "regime": "FUNDACIONAL",
+    "motif": ["barrete frígio", "liberdade"]
+  },
+  {
+    "id": "UK-1897-001",
+    "title": "Britannia imperial",
+    "country": "UK",
+    "year": 1897,
+    "regime": "MILITAR",
+    "motif": ["elmo", "escudo", "domínio marítimo"]
+  },
+  {
+    "id": "DE-1914-001",
+    "title": "Germania mobilizada",
+    "country": "DE",
+    "year": 1914,
+    "regime": "MILITAR",
+    "motif": ["espada", "postura heroica"]
+  },
+  {
+    "id": "US-1876-001",
+    "title": "Columbia centenária",
+    "country": "US",
+    "year": 1876,
+    "regime": "FUNDACIONAL",
+    "motif": ["estrela", "progresso"]
+  },
+  {
+    "id": "BE-1905-001",
+    "title": "Belgica monumental",
+    "country": "BE",
+    "year": 1905,
+    "regime": "NORMATIVO",
+    "motif": ["trono", "heráldica"]
+  },
+  {
+    "id": "BR-1891-001",
+    "title": "Efígie da República",
+    "country": "BR",
+    "year": 1891,
+    "regime": "NORMATIVO",
+    "motif": ["barrete frígio", "perfil monetário"]
+  }
+]
