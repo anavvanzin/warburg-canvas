@@ -1,16 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { loadCorpus, resolveCorpusUrl } from "./domain/corpus.js";
 import {
   addConnection,
   createLayout,
   filterCorpus,
   mergeNodePositions,
-  normalizeCorpus,
   parseCorpusText,
   readStoredLayout,
   reconcileLayout,
   removeConnection,
   storeLayout,
 } from "./domain/layout.js";
+
+const CORPUS_URL = resolveCorpusUrl(import.meta.env);
 
 function values(items, key) {
   return [...new Set(items.map((item) => item[key]).filter(Boolean))].sort();
@@ -266,26 +268,26 @@ export default function App() {
     regime: "",
   });
   const [linkingSource, setLinkingSource] = useState(null);
-  const [status, setStatus] = useState("Carregando corpus de demonstração…");
+  const [status, setStatus] = useState("Carregando corpus canônico…");
   const [dirty, setDirty] = useState(false);
 
   useEffect(() => {
-    fetch("/corpus.sample.json")
-      .then((response) => {
-        if (!response.ok) throw new Error("Corpus de demonstração indisponível.");
-        return response.json();
-      })
-      .then((payload) => {
-        const corpus = normalizeCorpus(payload);
+    const controller = new AbortController();
+
+    loadCorpus(CORPUS_URL, { signal: controller.signal })
+      .then((corpus) => {
         setItems(corpus);
         setLayout(reconcileLayout(readStoredLayout(), corpus));
-        setStatus(`${corpus.length} itens carregados.`);
+        setStatus(`${corpus.length} itens carregados do corpus canônico.`);
       })
       .catch((error) => {
+        if (error?.name === "AbortError") return;
         setItems([]);
         setLayout(createLayout([]));
         setStatus(error.message);
       });
+
+    return () => controller.abort();
   }, []);
 
   const visibleItems = useMemo(
@@ -447,6 +449,15 @@ export default function App() {
               {visibleItems.length} visíveis de {items.length}. Os filtros não
               alteram o painel salvo.
             </p>
+            <a
+              className="corpus-source"
+              href={CORPUS_URL}
+              target="_blank"
+              rel="noreferrer"
+              title={CORPUS_URL}
+            >
+              abrir exportação canônica
+            </a>
           </section>
 
           <section className="connection-panel">

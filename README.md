@@ -6,6 +6,7 @@ O projeto é deliberadamente separado do companion. Ele recebe dados do corpus, 
 
 ## MVP
 
+- carregamento automático da exportação pública canônica do corpus;
 - importação de corpus em JSON ou JSONL;
 - filtros por país, regime e busca textual;
 - arrastar, ampliar e deslocar a mesa;
@@ -21,11 +22,41 @@ npm install
 npm run dev
 ```
 
+Por padrão, o aplicativo lê somente a exportação pública derivada em
+`anavvanzin/iconocracy-corpus/corpus/corpus-data.json`. A cadeia de dados é:
+
+```text
+data/processed/records.jsonl → corpus/corpus-data.json → warburg-canvas
+```
+
+`records.jsonl` continua sendo o ledger canônico e `corpus-data.json` deve ser
+regenerado no repositório do corpus. O Warburg Canvas não escreve em nenhuma
+dessas fontes.
+
+Para usar outro endpoint em desenvolvimento ou no deploy, configure a variável
+de build `VITE_CORPUS_URL`:
+
+```bash
+cp .env.example .env.local
+npm run dev
+```
+
+Se a variável não for definida, o aplicativo usa a URL raw da branch `main` do
+repositório canônico. Depois da carga, o layout salvo localmente é reconciliado
+com o corpus: posições conhecidas são preservadas e novos itens recebem posições
+iniciais sem reiniciar a curadoria existente.
+
 ## Verificar
 
 ```bash
+npm ci
 npm run check
 ```
+
+Antes do deploy, confirme também que a URL configurada responde com JSON e
+permite leitura pelo navegador (CORS), e faça um teste manual de carga, filtros,
+movimentação, salvamento e recarga do painel. A CI repete build e testes nas
+versões 18, 20 e 22 do Node.js.
 
 ## Contrato mínimo do corpus
 
