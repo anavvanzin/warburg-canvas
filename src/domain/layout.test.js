@@ -53,6 +53,32 @@ describe("corpus and connections", () => {
     expect(parsed.map((item) => item.id)).toEqual(["A", "B"]);
   });
 
+  it("normalizes fields from the canonical public export", () => {
+    const parsed = parseCorpusText(
+      JSON.stringify([
+        {
+          id: "BR-1891-001",
+          title: "Efígie da República",
+          country: "Brazil",
+          date: "1891",
+          regime: "normativo",
+          url: "https://example.org/catalogue/item",
+          support: "moeda",
+        },
+      ]),
+    );
+
+    expect(parsed[0]).toEqual(
+      expect.objectContaining({
+        id: "BR-1891-001",
+        year: "1891",
+        imageUrl: "",
+        url: "https://example.org/catalogue/item",
+        support: "moeda",
+      }),
+    );
+  });
+
   it("does not duplicate the same directed connection", () => {
     const layout = createLayout(items);
     const once = addConnection(layout, "FR-001", "DE-001", "gesto");
