@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   addConnection,
   createLayout,
@@ -14,7 +14,19 @@ const items = [
   { id: "BR-001", title: "República", country: "BR", regime: "NORMATIVO" },
 ];
 
+afterEach(() => vi.unstubAllGlobals());
+
 describe("layout preservation", () => {
+  it("creates UUID-backed records when the Web Crypto global is unavailable", () => {
+    vi.stubGlobal("crypto", undefined);
+
+    const layout = createLayout(items);
+    const connected = addConnection(layout, "FR-001", "DE-001", "gesto");
+
+    expect(layout.id).toMatch(/^layout-\d+$/);
+    expect(connected.connections[0].id).toMatch(/^connection-\d+$/);
+  });
+
   it("preserves hidden nodes when a visible node moves", () => {
     const layout = createLayout(items);
     const hiddenBefore = layout.nodes["DE-001"];

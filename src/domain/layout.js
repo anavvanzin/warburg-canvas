@@ -78,7 +78,7 @@ export function parseCorpusText(text) {
 export function createLayout(items, name = "Painel sem título") {
   return {
     version: LAYOUT_VERSION,
-    id: crypto.randomUUID?.() ?? `layout-${Date.now()}`,
+    id: globalThis.crypto?.randomUUID?.() ?? `layout-${Date.now()}`,
     name,
     nodes: Object.fromEntries(
       items.map((item, index) => [item.id, defaultPosition(index)]),
@@ -134,7 +134,7 @@ export function addConnection(layout, sourceId, targetId, label) {
     connections: [
       ...layout.connections,
       {
-        id: crypto.randomUUID?.() ?? `connection-${Date.now()}`,
+        id: globalThis.crypto?.randomUUID?.() ?? `connection-${Date.now()}`,
         sourceId,
         targetId,
         label: String(label || "Pathosformel").trim() || "Pathosformel",
