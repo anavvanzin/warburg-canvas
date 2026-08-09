@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   addConnection,
   createLayout,
@@ -14,7 +14,19 @@ const items = [
   { id: "BR-001", title: "República", country: "BR", regime: "NORMATIVO" },
 ];
 
+afterEach(() => vi.unstubAllGlobals());
+
 describe("layout preservation", () => {
+  it("creates UUID-backed records when the Web Crypto global is unavailable", () => {
+    vi.stubGlobal("crypto", undefined);
+
+    const layout = createLayout(items);
+    const connected = addConnection(layout, "FR-001", "DE-001", "gesto");
+
+    expect(layout.id).toMatch(/^layout-\d+$/);
+    expect(connected.connections[0].id).toMatch(/^connection-\d+$/);
+  });
+
   it("preserves hidden nodes when a visible node moves", () => {
     const layout = createLayout(items);
     const hiddenBefore = layout.nodes["DE-001"];
@@ -51,6 +63,32 @@ describe("corpus and connections", () => {
       '{"id":"A","title":"Alpha"}\n{"id":"B","title":"Beta"}',
     );
     expect(parsed.map((item) => item.id)).toEqual(["A", "B"]);
+  });
+
+  it("normalizes fields from the canonical public export", () => {
+    const parsed = parseCorpusText(
+      JSON.stringify([
+        {
+          id: "BR-1891-001",
+          title: "Efígie da República",
+          country: "Brazil",
+          date: "1891",
+          regime: "normativo",
+          url: "https://example.org/catalogue/item",
+          support: "moeda",
+        },
+      ]),
+    );
+
+    expect(parsed[0]).toEqual(
+      expect.objectContaining({
+        id: "BR-1891-001",
+        year: "1891",
+        imageUrl: "",
+        url: "https://example.org/catalogue/item",
+        support: "moeda",
+      }),
+    );
   });
 
   it("does not duplicate the same directed connection", () => {

@@ -180,6 +180,21 @@ select:focus {
   line-height: 1.55;
 }
 
+.corpus-source {
+  display: inline-block;
+  margin-top: 8px;
+  color: var(--gold);
+  font-family: "Courier New", monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.corpus-source:hover,
+.corpus-source:focus-visible {
+  color: var(--paper);
+}
+
 .connection-panel ol {
   padding: 0;
   margin: 0;
